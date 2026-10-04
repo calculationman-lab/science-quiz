@@ -1,13 +1,14 @@
 (function(){
   'use strict';
   const D=window.ScienceData,C=window.ScienceCore,G=window.ScienceDiagrams,$=id=>document.getElementById(id);
-  const byId=new Map(D.questions.map(q=>[q.id,q])),byUnit=new Map(D.units.map(u=>[u.id,u]));
+  const byId=new Map(D.allQuestions.map(q=>[q.id,q])),byUnit=new Map(D.units.map(u=>[u.id,u]));
+  const cleanProgress=raw=>C.cleanProgress(raw,D.allQuestions,Date.now(),D.aliases);
   const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let storageError=false;
   function read(key){try{return JSON.parse(localStorage.getItem(key)||'null');}catch{return null;}}
   function write(key,value){try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,JSON.stringify(value));storageError=false;}catch{storageError=true;}renderStorage();}
   function renderStorage(){ $('storage-status').textContent=storageError?'このブラウザでは記録を保存できません。バックアップを保存してください。':''; }
-  let settings=C.cleanSettings(read(C.KEYS.settings)),progress=C.cleanProgress(read(C.KEYS.progress),D.questions),session=C.validateSession(read(C.KEYS.session),D.questions),result=null,revealed=false;
+  let settings=C.cleanSettings(read(C.KEYS.settings)),progress=cleanProgress(read(C.KEYS.progress)),session=C.validateSession(read(C.KEYS.session),D.allQuestions),result=null,revealed=false;
   function persistSettings(){write(C.KEYS.settings,settings);}
   function persistProgress(){write(C.KEYS.progress,progress);}
   function persistSession(){write(C.KEYS.session,session);}
@@ -42,7 +43,7 @@
     for(const b of document.querySelectorAll('[data-filter]')){const active=b.dataset.filter===settings.filter;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',active);}
   }
   function renderHome(){
-    progress=C.cleanProgress(progress,D.questions);renderCountdown();renderUnits();renderPool();renderStorage();
+    progress=cleanProgress(progress);renderCountdown();renderUnits();renderPool();renderStorage();
     const today=progress.history.filter(h=>jstDay(h.at)===jstDay(Date.now()));$('today-status').textContent=today.length?`${today.length}回 · ${today.reduce((n,h)=>n+h.total,0)}問学習しました`:'まだ学習していません';
     $('content-summary').textContent=`17単元 · ${D.questions.length}問 · 図の問題 ${D.questions.filter(q=>q.diagram).length}問`;
     $('resume-box').hidden=!session;if(session)$('resume-text').textContent=`${session.mode==='choice'?'4択':'記述'} ${session.ids.length}問の${session.index+1}問目から再開できます。`;
@@ -84,13 +85,13 @@
   function grade(value,selected=null){
     if(!session||session.answers[session.index]||session.mode==='written'&&!revealed)return;
     const q=current();session.answers[session.index]={grade:value,selected};
-    if(value!=='correct'){progress=C.cleanProgress(progress,D.questions);progress.mistakes[session.mode][q.id]=Date.now();persistProgress();}
+    if(value!=='correct'){progress=cleanProgress(progress);progress.mistakes[session.mode][D.aliases[q.id]||q.id]=Date.now();persistProgress();}
     persistSession();renderQuestion();
   }
   function next(){if(!session.answers[session.index])return;if(session.index===session.ids.length-1)finish();else{session.index++;persistSession();renderQuestion();window.scrollTo({top:0});}}
   function finish(){
     result=JSON.parse(JSON.stringify(session));const correct=result.answers.filter(a=>a.grade==='correct').length,partial=result.answers.filter(a=>a.grade==='partial').length;
-    progress=C.cleanProgress(progress,D.questions);progress.history.push({mode:result.mode,at:Date.now(),correct,partial,total:result.ids.length,review:result.review});progress.history=progress.history.slice(-100);persistProgress();session=null;persistSession();
+    progress=cleanProgress(progress);progress.history.push({mode:result.mode,at:Date.now(),correct,partial,total:result.ids.length,review:result.review});progress.history=progress.history.slice(-100);persistProgress();session=null;persistSession();
     const wrong=result.ids.filter((id,i)=>result.answers[i].grade!=='correct');$('result-summary').textContent=result.mode==='choice'?`正解 ${correct}／${result.ids.length}問`:`○ ${correct}問 · △ ${partial}問 · × ${wrong.length-partial}問`;
     $('result-meta').textContent=`${result.mode==='choice'?'4択':'記述'}${result.review?'の復習':''} · ${result.ids.length}問学習しました。`;
     $('result-wrong').replaceChildren();
@@ -102,14 +103,14 @@
   function home(){show('home');renderHome();}
   function openSettings(){$('exam-date').value=settings.examDate;$('enrollment-year').value=settings.enrollmentYear;$('settings-status').textContent='';$('settings-dialog').showModal();}
   function exportData(){try{
-    const payload={app:'理科マスター',formatVersion:1,exportedAt:new Date().toISOString(),progress:C.cleanProgress(progress,D.questions),settings,session};
+    const payload={app:'理科マスター',formatVersion:1,exportedAt:new Date().toISOString(),progress:cleanProgress(progress),settings,session};
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`理科マスター_バックアップ_${jstDay(Date.now()).replaceAll('-','')}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('settings-status').textContent='バックアップを保存しました。端末のダウンロードを確認してください。';
   }catch{$('settings-status').textContent='バックアップを保存できませんでした。';}}
   async function importData(file){
     if(!file)return;
     try{
       if(file.size>2*1024*1024)throw Error('ファイルが大きすぎます。理科のバックアップを選んでください。');
-      const data=C.validateBackup(JSON.parse(await file.text()),D.questions);
+      const data=C.validateBackup(JSON.parse(await file.text()),D.allQuestions,D.aliases);
       if(!confirm(`理科の学習記録${data.progress.history.length}件・設定・途中の学習を置き換えます。現在のデータはバックアップ済みですか？`))return;
       const old=Object.values(C.KEYS).map(key=>[key,localStorage.getItem(key)]);
       try{localStorage.setItem(C.KEYS.progress,JSON.stringify(data.progress));localStorage.setItem(C.KEYS.settings,JSON.stringify(data.settings));if(data.session)localStorage.setItem(C.KEYS.session,JSON.stringify(data.session));else localStorage.removeItem(C.KEYS.session);}

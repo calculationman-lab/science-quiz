@@ -89,6 +89,87 @@
     else if(type==='filtration'){s=box(235,222,150,80,'#f4fbff')+`<path d="M195 65L425 65L322 175L322 229L303 229L303 175Z" fill="#d9e8ed" stroke="${C.blue}" stroke-width="3"/><path d="M211 85L409 85L313 161Z" fill="#f7f2e5" stroke="#a8a296"/>`;[255,288,330,368].forEach(x=>s+=circle(x,105,4,'#b59060'));s+=arrow(465,97,354,111)+text(506,97,'砂',18)+text(120,124,'ろ紙')+line(155,124,244,135)+text(450,276,'ろ液')+line(408,271,374,271);desc='ろうと内のろ紙に砂が残り、液体は下のビーカーへ落ちる。';}
     else if(type==='ammeter'){s=box(20,10,580,300)+`<path d="M110 70L510 70L510 245L110 245Z" fill="none" stroke="${C.ink}" stroke-width="3"/>`+circle(310,245,35,'white',C.ink)+text(310,253,'A',24)+circle(510,155,30,'#ffdc75',C.ink)+text(510,164,'豆球',16)+line(250,50,250,90,C.ink,4)+line(270,40,270,100,C.ink,4)+text(260,30,'電池',17);desc='電池、豆球、電流計Aが一つの輪に直列につながる回路の模式図。';}
     else if(type==='microscope'){s=`<path d="M265 255L385 255L355 190L340 130L345 80L300 80L295 140L310 220Z" fill="#b5ced2" stroke="${C.ink}" stroke-width="3"/><rect x="297" y="50" width="55" height="35" fill="${C.dark}"/><path d="M220 185L370 185M300 135L282 169M330 137L340 171" stroke="${C.ink}" stroke-width="8"/><ellipse cx="310" cy="285" rx="110" ry="16" fill="#8caaae"/>`+arrow(140,55,283,65)+text(110,55,'A',24)+text(462,183,'ステージ',17)+line(407,183,371,183);desc='顕微鏡の模式図。Aは鏡筒の上端にある接眼レンズを指す。下には対物レンズとステージがある。';}
+    else if(type==='star-trails'){
+      s=text(310,28,'日本の中緯度：同じ時間だけ観察',18);
+      ['A 東','B 南','C 西'].forEach((v,i)=>{const x=30+i*195;s+=box(x,50,175,220,'#203343')+line(x+10,225,x+165,225,'#7895a6')+text(x+87,300,v);s+=i===0?arrow(x+35,200,x+130,95,'#ffcf55'):i===1?arrow(x+30,145,x+145,145,'#ffcf55'):arrow(x+35,95,x+130,200,'#ffcf55');});desc='東は斜め上、南は右、西は斜め下へ星の軌跡が進む模式図。';
+    }
+    else if(type==='star-radii'){
+      h=355;
+      s=box(25,10,570,335,'#203343')+circle(310,180,4,'white')+text(310,225,'北極星',18,'white');
+      [75,145].forEach((r,i)=>{s+=circle(310,180,r,'none','#7895a6')+line(310,180,310+r,180,'#7895a6')+line(310,180,310+r*Math.cos(Math.PI/12),180-r*Math.sin(Math.PI/12),'#7895a6')+circle(310+r,180,5,C.gold)+text(330+r,185,i?'B':'A',18,'white');});s+=text(310,37,'同じ1時間の回転角を比べる',18,'white');desc='北極星から近いAと遠いBの星の円。同じ角度の扇形で、円弧の長さは異なる。';
+    }
+    else if(type==='embryo-parts'){
+      s=box(25,10,570,300)+`<ellipse cx="260" cy="145" rx="65" ry="35" fill="#ddd69b"/><ellipse cx="390" cy="145" rx="65" ry="35" fill="#ddd69b"/><path d="M325 135Q290 78 325 60Q350 80 325 110M325 135L325 207Q335 245 308 263" fill="none" stroke="${C.green}" stroke-width="9"/>`+arrow(140,65,306,79)+text(110,65,'A')+arrow(480,188,335,188)+text(510,190,'B')+arrow(140,259,299,255)+text(110,260,'C')+text(435,112,'子葉',17);desc='種子の胚の模式図。Aは子葉の上の幼芽、Bは子葉と幼根の間の胚軸、Cは下端の幼根。';
+    }
+    else if(type==='leaf-veins'){
+      [160,460].forEach((x,i)=>{s+=`<path d="M${x} 65Q${x-125} 160 ${x} 265Q${x+125} 160 ${x} 65Z" fill="#e4f3df" stroke="${C.green}" stroke-width="3"/>`+line(x,65,x,265,C.green);if(i){[-25,-12,12,25].forEach(d=>s+=`<path d="M${x} 65Q${x+d*2} 160 ${x} 265" fill="none" stroke="${C.green}"/>`);}else{for(let y=115;y<=225;y+=35){s+=line(x,y,x-30,y-12,C.green)+line(x,y,x+30,y-12,C.green)+line(x-18,y-7,x-18,y-23,C.green)+line(x+18,y-7,x+18,y-23,C.green);}}s+=text(x,300,i?'B':'A');});desc='Aは中央の葉脈から枝分かれする網状脈、Bは葉の長さに沿う平行脈。';
+    }
+    else if(type==='root-systems'){
+      s=line(25,105,595,105,'#aa8c66');[160,460].forEach((x,i)=>{s+=plant(x,105)+text(x,304,i?'B':'A');if(!i){s+=line(x,108,x,265,C.green,6);for(let y=140;y<=240;y+=30)s+=line(x,y,x-45,y+25,C.green,2)+line(x,y,x+45,y+25,C.green,2);}else[-65,-35,-10,15,40,65].forEach(d=>s+=`<path d="M${x} 110Q${x+d} 150 ${x+d} 265" fill="none" stroke="${C.green}" stroke-width="3"/>`);});desc='Aは太い主根から側根が分かれる。Bはほぼ同じ太さの細いひげ根が多数伸びる。';
+    }
+    else if(type==='germination-test'){
+      h=340;const rows=[['組','水','空気','温度'],['A','あり','あり','25℃'],['B','なし','あり','25℃'],['C','あり','なし','25℃'],['D','あり','あり','5℃']];rows.forEach((row,i)=>row.forEach((v,j)=>s+=box(30+j*140,45+i*48,140,48,i===0?'#dceee8':'white')+text(100+j*140,76+i*48,v,19)));s+=text(310,325,'種子の種類・個数などはそろえる',17);desc='発芽実験条件表。Aは水と空気あり25℃、Bは水なし空気あり25℃、Cは水あり空気なし25℃、Dは水と空気あり5℃。';
+    }
+    else if(type==='seed-nutrition'){
+      h=310;const rows=[['種子','でんぷん','たんぱく質','しぼう','水','その他'],['イネ','74','7','3','15','1'],['ダイズ','28','35','19','13','5'],['ゴマ','18','20','52','5','5']];s=text(310,30,'教材の割合：種子全体を100とする',18);rows.forEach((row,i)=>row.forEach((v,j)=>s+=box(10+j*100,55+i*48,100,48,i===0?'#dceee8':'white')+text(60+j*100,85+i*48,v,i===0?14:19)));s+=text(310,290,'数値は教材の目安です',17);desc='種子の養分表。でんぷん、たんぱく質、脂肪、水、その他の順に、イネ74、7、3、15、1。ダイズ28、35、19、13、5。ゴマ18、20、52、5、5。';
+    }
+    else if(type==='gravity-growth'){
+      s=box(240,135,85,75,'#bd8465')+`<path d="M285 135Q285 75 380 75Q415 75 415 40M285 210Q285 260 180 260Q150 260 150 292" fill="none" stroke="${C.green}" stroke-width="6"/>`+leaf(380,75,1)+arrow(500,65,500,245)+text(540,160,'重力',18)+text(150,235,'根',18)+text(425,30,'芽・茎',18);desc='鉢を横に置く模式図。芽や茎は上に曲がり、根は下に曲がる。重力の矢印は下向き。';
+    }
+    else if(type==='auxin-stem'){
+      s=box(265,260,100,35,'#bd8465')+`<path d="M295 260Q335 160 250 95M317 260Q382 150 265 82" fill="none" stroke="${C.green}" stroke-width="5"/>`+leaf(255,92,-1)+arrow(65,135,215,135,'#ba8b26')+text(115,107,'光')+text(430,160,'右側',18)+text(310,315,'曲がる側と伸びる側を比べる',17);desc='光は左から来る。茎の右側の方が長く伸び、茎全体が左に曲がる模式図。';
+    }
+    else if(type==='flower-parts'){
+      s=`<path d="M280 50Q310 25 340 50L318 70L318 180L302 180L302 70Z" fill="#9cc784" stroke="${C.green}" stroke-width="3"/><ellipse cx="310" cy="222" rx="65" ry="60" fill="#d3e6be" stroke="${C.green}" stroke-width="3"/><ellipse cx="310" cy="235" rx="15" ry="21" fill="#e5c576" stroke="#b59b55"/>`;
+      [[110,50,272,50,'A'],[480,120,329,120,'B'],[110,215,236,215,'C'],[480,252,330,240,'D']].forEach(([x,y,a,b,l])=>s+=arrow(x,y,a,b)+text(x<310?x-25:x+25,y,l,23));desc='めしべの断面。Aは先端の柱頭、Bは細い花柱、Cは袋状の子房、Dは子房内の胚珠を指す。';
+    }
+    else if(type==='mountain-cloud'){
+      s=`<path d="M80 265L340 90L550 265Z" fill="#a8bd98"/>`+arrow(70,200,210,185)+arrow(215,183,295,125)+cloud(315,70,28)+text(125,165,'湿った空気',17)+text(310,309,'山の斜面に沿う空気の流れ',18);desc='湿った空気が山の斜面に沿って上がり、上方で雲ができる。';
+    }
+    else if(type==='rain-two-cylinders'||type==='rain-volume'){
+      if(type==='rain-volume'){s=box(210,70,200,210,'#f4fbff')+`<rect x="212" y="200" width="196" height="78" fill="#b9dfed"/>`+text(310,38,'受け口・底：100cm²')+text(310,250,'水：200cm³',20)+text(490,170,'深さ？',18);desc='断面積100平方cmが一定の容器に200立方cmの水。水の深さは未表示。';}
+      else{[170,450].forEach((x,i)=>{const w=i?200:100;s+=box(x-w/2,90,w,190,'#f4fbff')+`<rect x="${x-w/2+2}" y="210" width="${w-4}" height="68" fill="#b9dfed"/>`+text(x,315,i?'大きい容器':'小さい容器',17);for(let xx=x-w/2+15;xx<x+w/2;xx+=30)s+=arrow(xx,30,xx,75);});desc='同じ雨を受ける断面積一定の大小2つの円筒。両方とも水の深さは同じ。';}
+    }
+    else if(type==='pressure-plan'){
+      s=text(310,28,'北半球・地表近く（上から見る）',18);[170,450].forEach((x,i)=>{s+=circle(x,160,70,'none','#9bb7bc')+text(x,168,i?'低':'高',27);for(let k=0;k<4;k++){const a=k*Math.PI/2,start=a+(i?.55:-.55),end=a+(i?-.55:.55),r1=i?115:55,r2=i?55:115;s+=arrow(x+r1*Math.cos(start),160+r1*Math.sin(start),x+r2*Math.cos(end),160+r2*Math.sin(end));}s+=text(x,306,i?'B':'A');});desc='Aは高気圧で時計回りに外へ吹き出し、Bは低気圧で反時計回りに中心へ吹き込む。';
+    }
+    else if(type==='wind-force-table'){
+      h=340;[['風力','風速（m/秒）'],['2','1.6〜3.3'],['3','3.4〜5.4'],['4','5.5〜7.9'],['5','8.0〜10.7'],['6','10.8〜13.8']].forEach((r,i)=>r.forEach((v,j)=>s+=box(80+j*220,25+i*48,220,48,i===0?'#dceee8':'white')+text(190+j*220,56+i*48,v,19)));desc='風力表。2は1.6から3.3、3は3.4から5.4、4は5.5から7.9、5は8.0から10.7、6は10.8から13.8m毎秒。';
+    }
+    else if(type==='weather-symbols'){
+      ['A','B','C','D'].forEach((v,i)=>{const x=85+i*150;s+=circle(x,155,35,i===3?C.ink:'white',C.ink)+text(x,255,v,23);if(i===1)s+=line(x,108,x,202,C.ink,3);if(i===2)s+=circle(x,155,23,'none',C.ink);});desc='Aは白い円、Bは白い円と縦線、Cは二重の円、Dは黒く塗りつぶした円。';
+    }
+    else if(type==='front-symbols'){
+      h=340;['A','B','C','D'].forEach((v,i)=>{const y=65+i*75,col=i===0?'#ce625a':i===1?C.blue:i===3?'#8d6db2':'#6c8194';s+=text(55,y+7,v,24)+line(105,y,555,y,col,3);for(let k=0;k<6;k++){const x=140+k*70,semi=i===0||i>1&&k%2===0;if(semi)s+=`<path d="M${x-17} ${y}A17 17 0 0 1 ${x+17} ${y}Z" fill="${i===2?'#ce625a':col}"/>`;else s+=`<path d="M${x-17} ${y}L${x} ${y+(i===2?23:-23)}L${x+17} ${y}Z" fill="${i===2?C.blue:col}"/>`;}});desc='Aは半円、Bは三角、Cは線の両側に交互の半円と三角、Dは同じ側に交互の半円と三角。';
+    }
+    else if(type==='typhoon-section'){
+      s=line(25,270,595,270)+text(310,308,'台風の中心を通る断面（模式図）',17)+text(310,35,'A',24)+text(155,35,'B',24)+text(465,35,'B',24)+arrow(310,75,310,245);
+      [155,465].forEach(x=>s+=cloud(x,110,40)+arrow(x,250,x,155)+line(x-20,200,x-35,245,C.blue)+line(x+20,200,x+5,245,C.blue));desc='Aは中央の目で下降流。両側Bは目の周囲で上昇流と発達した雲、雨がある。';
+    }
+    else if(type==='typhoon-plan'){
+      s=text(310,28,'北半球の台風を上から見る',18)+circle(310,180,85,'none','#90b4bd')+circle(310,180,20,'#e5f1ee',C.blue)+arrow(310,150,310,55,'#a57828')+text(390,64,'進行方向',17)+arrow(405,205,405,140)+arrow(215,155,215,220)+text(500,185,'進行方向の右',17)+text(115,185,'左',17);desc='台風は上へ進み、反時計回り。進行方向の右の回転の風は上向き、左は下向き。';
+    }
+    else if(type==='typhoon-classes'){
+      h=395;s=text(310,26,'気象庁の分類基準',19);const rows=[['強さ','最大風速（m/秒）'],['強い','33以上44未満'],['非常に強い','44以上54未満'],['猛烈な','54以上'],['大きさ','風速15m/秒以上の範囲の半径'],['大型','500km以上800km未満'],['超大型','800km以上']];rows.forEach((r,i)=>{s+=box(25,45+i*48,200,48,i===0||i===4?'#dceee8':'white')+text(125,76+i*48,r[0],18)+box(225,45+i*48,370,48,i===0||i===4?'#dceee8':'white')+text(410,76+i*48,r[1],i===4?15:18);});desc='強さ：強い33以上44未満、非常に強い44以上54未満、猛烈な54以上m毎秒。大きさ：風速15m毎秒以上の範囲の半径が500以上800未満kmで大型、800km以上で超大型。';
+    }
+    else if(type==='sound-compression'){
+      s=text(310,35,'空気の振動が伝わる模式図',19);for(let x=60;x<=560;x+=5){const dense=Math.cos((x-60)/100*Math.PI*2)>.3;if(dense||x%15===0)s+=line(x,95,x,220,C.blue,dense?2:1);}s+=arrow(135,265,480,265)+text(310,303,'音が伝わる向き',18);desc='空気の濃い部分と薄い部分が交互に並ぶ。矢印は音が伝わる向きで、空気そのものの一方向の移動ではない。';
+    }
+    else if(type==='sound-reflection'){
+      s=line(50,265,570,265,C.ink,5)+text(535,295,'壁',18)+`<path d="M310 60L310 265" stroke="#93a8af" stroke-dasharray="7 5" stroke-width="2"/>`+arrow(210,90,310,265)+arrow(310,265,410,90)+text(185,78,'入る音',17)+text(440,78,'反射した音',17)+text(265,194,'30°',21)+text(358,194,'？',23)+text(310,37,'垂線',17);desc='壁に垂直な線の左から音が入射する。入射角は垂線から30度。右へ反射し、その角度は未表示。';
+    }
+    else if(type==='timbre'){
+      s=text(310,25,'同じ基本の振動数・同じ大きさの模式図',17)+box(70,45,500,105,'#f6fbff')+box(70,180,500,105,'#f6fbff')+wave(97,28,3);let d='';for(let x=105;x<=515;x+=2){const t=(x-105)/410*Math.PI*6;d+=`${x===105?'M':'L'}${x} ${232-(Math.sin(t)+.3*Math.sin(3*t))/.92022*28}`;}s+=`<path d="${d}" stroke="${C.blue}" stroke-width="3" fill="none"/>`+text(40,105,'A',23)+text(40,240,'B',23);desc='Aはなめらかな波、Bは同じ基本周期で細かい形の異なる波。音色の違いを示す模式図。';
+    }
+    else if(type==='frequency-count'){
+      s=box(70,60,500,190,'#f6fbff')+line(105,155,515,155,'#aebfc5')+wave(155,45,4)+line(105,265,515,265)+line(105,257,105,273)+line(515,257,515,273)+text(310,305,'0.01秒',22)+text(310,30,'この時間内に4回の振動',19);desc='0.01秒間の波形で完全な4周期が描かれている。';
+    }
+    else if(type==='displacement'){
+      [170,450].forEach((x,i)=>{s+=box(x-65,55,130,220,'#f4fbff')+`<rect x="${x-63}" y="${i?120:180}" width="126" height="${i?153:93}" fill="#b9dfed"/>`+text(x,i?102:162,i?'65mL':'40mL',22)+text(x,309,i?'石を沈めた後':'入れる前',18);if(i)s+=`<ellipse cx="${x}" cy="235" rx="35" ry="24" fill="#80979e"/>`;});desc='水面が入れる前40mL、石を完全に沈めた後65mL。漏れや気泡はない。';
+    }
+    else if(type==='ammeter-scale'){
+      s=box(55,30,510,270,'#f6fbff')+`<path d="M120 235A190 165 0 0 1 500 235" fill="none" stroke="#a4b8c1" stroke-width="2"/>`;for(let k=0;k<=5;k++){const a=Math.PI+(k/5)*Math.PI,x=310+190*Math.cos(a),y=235+165*Math.sin(a);s+=line(x,y,310+170*Math.cos(a),235+145*Math.sin(a))+text(310+145*Math.cos(a)+(k===2?-18:0),235+118*Math.sin(a),String(k),21);}const a=Math.PI+2/5*Math.PI;s+=arrow(310,235,310+165*Math.cos(a),235+145*Math.sin(a))+text(310,283,'使用端子：500mA',20);desc='0から5までの目盛りで針は2を指す。500mA端子を使用。';
+    }
     else throw new Error('Unknown diagram '+key);
     return {svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 ${h}" role="img" aria-label="${desc}" style="font-family:system-ui, sans-serif"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="context-stroke"/></marker></defs>${s}</svg>`,description:desc};
   }

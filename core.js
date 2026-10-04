@@ -5,9 +5,9 @@
   const DEFAULTS={mode:'choice',filter:'all',units:Array.from({length:17},(_,i)=>i+1),examDate:'2029-02-03',enrollmentYear:2023};
   function shuffle(items,random=Math.random){const a=items.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   function pool(questions,settings){return questions.filter(q=>settings.units.includes(q.unit)&&(settings.filter!=='diagram'||q.diagram));}
-  function cleanProgress(raw,questions,now=Date.now()){
+  function cleanProgress(raw,questions,now=Date.now(),aliases={}){
     const ids=new Set(questions.map(q=>q.id)),mistakes={choice:{},written:{}};
-    for(const mode of ['choice','written'])for(const [id,t] of Object.entries(raw?.mistakes?.[mode]||{}))if(ids.has(id)&&Number.isFinite(t)&&t>now-WEEK&&t<=now)mistakes[mode][id]=t;
+    for(const mode of ['choice','written'])for(const [oldId,t] of Object.entries(raw?.mistakes?.[mode]||{})){const id=aliases[oldId]||oldId;if(ids.has(id)&&Number.isFinite(t)&&t>now-WEEK&&t<=now)mistakes[mode][id]=Math.max(mistakes[mode][id]||0,t);}
     const history=Array.isArray(raw?.history)?raw.history.filter(h=>h&&['choice','written'].includes(h.mode)&&Number.isFinite(h.at)&&h.at<=now&&Number.isInteger(h.total)&&h.total>0&&h.total<=questions.length&&Number.isInteger(h.correct)&&h.correct>=0&&h.correct<=h.total&&Number.isInteger(h.partial||0)&&(h.partial||0)>=0&&h.correct+(h.partial||0)<=h.total).slice(-100).map(h=>({mode:h.mode,at:h.at,total:h.total,correct:h.correct,partial:h.partial||0,review:h.review===true})):[];
     return{version:1,history,mistakes};
   }
@@ -27,9 +27,9 @@
     return{version:1,mode:raw.mode,ids:raw.ids.slice(),index:raw.index,answers:raw.answers.map(a=>a?{grade:a.grade,selected:typeof a.selected==='string'?a.selected:null}:null),optionOrder:raw.optionOrder.map(a=>a.slice()),startedAt:raw.startedAt,review:raw.review===true};
   }
   function weekly(progress,mode,questions,now=Date.now()){const p=cleanProgress(progress,questions,now);return questions.filter(q=>p.mistakes[mode][q.id]);}
-  function validateBackup(data,questions){
+  function validateBackup(data,questions,aliases={}){
     if(!data||data.app!=='理科マスター'||data.formatVersion!==1||!data.progress||data.progress.version!==1||!Array.isArray(data.progress.history)||!data.progress.mistakes||!data.settings||typeof data.settings!=='object'||Array.isArray(data.settings))throw Error('理科マスターのバックアップではありません。');
-    const p=cleanProgress(data.progress,questions),s=cleanSettings(data.settings),session=data.session===null?null:validateSession(data.session,questions);
+    const p=cleanProgress(data.progress,questions,Date.now(),aliases),s=cleanSettings(data.settings),session=data.session===null?null:validateSession(data.session,questions);
     if(p.history.length!==data.progress.history.length||!['choice','written'].includes(data.settings.mode)||!['all','diagram'].includes(data.settings.filter)||!validDate(data.settings.examDate)||!Number.isInteger(data.settings.enrollmentYear)||!Array.isArray(data.settings.units)||s.units.length!==data.settings.units.length||s.enrollmentYear!==data.settings.enrollmentYear||data.session!==null&&!session)throw Error('バックアップの内容が正しくありません。');
     if(root?.SchoolCountdown&&!root.SchoolCountdown.schoolDays(s.enrollmentYear,s.examDate))throw Error('入学年度と試験日の関係が正しくありません。');
     return{progress:p,settings:s,session};

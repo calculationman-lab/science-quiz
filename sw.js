@@ -1,5 +1,5 @@
 'use strict';
-const CACHE='science-quiz-v1-20261004-r3';
+const CACHE='science-quiz-v1-20261004-r4';
 const ASSETS=['./','./index.html','./styles.css','./questions.js','./diagrams.js','./core.js','./countdown.js','./app.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(url=>new Request(url,{cache:'reload'})))).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('science-quiz-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
