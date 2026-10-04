@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>理科マスター</title><meta name="theme-color" content="#227963">
+  <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="理科マスター">
+  <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./questions.js" defer></script><script src="./diagrams.js" defer></script><script src="./countdown.js" defer></script><script src="./core.js" defer></script><script src="./app.js" defer></script>
+</head>
+<body>
+<main class="shell">
+  <section id="home-screen" class="screen">
+    <header class="hero"><div><p class="eyebrow">小4下期 · 図から考える理科</p><h1>理科マスター</h1><p>見て、考えて、確かめる。</p></div><button id="settings-button" class="icon-button" aria-label="設定を開く">設定</button></header>
+    <div class="intro-grid">
+      <section class="card countdown-card" aria-label="受験までの日数"><p class="label">小石川 入試まで</p><p class="days">あと <strong id="exam-days">—</strong> 日</p><p class="muted" id="school-days"></p><button id="today-button" class="primary">今日の学習を始める</button></section>
+      <section class="card summary-card"><p class="label">今日の理科学習</p><strong id="today-status" class="today-status">まだ学習していません</strong><p class="muted" id="content-summary"></p><div class="resume-box" id="resume-box" hidden><p id="resume-text"></p><button id="resume-button" class="secondary">途中から再開する</button></div><p class="save-note" id="storage-status" role="status"></p></section>
+    </div>
+    <section class="card learn-card" aria-labelledby="learn-heading">
+      <div class="section-head"><div><p class="eyebrow">学習を選ぶ</p><h2 id="learn-heading">小4下期の理科</h2></div><span class="pill" id="pool-count"></span></div>
+      <fieldset><legend>学習方法</legend><div class="mode-options"><button data-mode="choice" class="mode selected" aria-pressed="true"><strong>4択</strong><span>選んで答えを確かめる</span></button><button data-mode="written" class="mode" aria-pressed="false"><strong>記述</strong><span>紙に書いて自己判定</span></button></div></fieldset>
+      <fieldset><legend>問題の種類</legend><div class="filter-row"><button data-filter="all" aria-pressed="true" class="chip selected">すべての問題</button><button data-filter="diagram" aria-pressed="false" class="chip">図の問題だけ</button></div></fieldset>
+      <details class="units-details" open><summary>出題する単元 <span id="unit-summary"></span></summary><div class="unit-actions"><button id="all-units" class="text-button">すべて選択</button><button id="no-units" class="text-button">選択解除</button></div><div id="unit-options"></div></details>
+      <p class="muted count-note" id="count-note"></p><div class="start-grid"><button class="primary" data-count="10">10問<span>短い学習に</span></button><button class="primary" data-count="20">20問<span>毎日の学習に</span></button><button class="secondary" data-count="50">50問<span>まとめて練習</span></button><button class="secondary" data-count="all">選択範囲の全問<span id="all-count"></span></button></div>
+      <p class="inline-status" id="start-status" role="status"></p>
+    </section>
+    <section class="card" aria-labelledby="weekly-heading"><p class="eyebrow">もう一度、確かめる</p><h2 id="weekly-heading">過去7日間のまちがいを復習</h2><p class="muted">選択中の単元にかかわらず、全単元の誤答から出題します。</p><div class="mode-options"><button id="weekly-choice" class="secondary" disabled>4択で復習 <span>0問</span></button><button id="weekly-written" class="secondary" disabled>記述の△・×を復習 <span>0問</span></button></div><p class="fine">正解し直しても、最後に間違えてから7日間は復習できます。</p></section>
+    <section class="card" aria-labelledby="history-heading"><div class="section-head"><h2 id="history-heading">これまでの学習</h2><button id="clear-history" class="text-button">記録を消す</button></div><div id="history-list" class="history-list"></div></section>
+    <footer><p>理科マスター v1.0 · 小4下期17単元</p><p class="fine">教材の学習内容をもとに作成した問題です。図は模式図です。</p><p id="offline-status" class="fine" role="status"></p><details class="source-details"><summary>教材と内容の確認について</summary><p>出典：理科4下期スキャン_20261004-1023.pdf（138ページ）。各問題の解説にPDFの通しページを記載しています。全設問の転記ではなく、要点から作成した204問です。</p><p>月の時刻・星の角度は教材の近似条件です。実際の観測時刻は日付・場所によって変わります。</p></details></footer>
+  </section>
+  <section id="quiz-screen" class="screen" hidden>
+    <header class="quiz-header"><button id="quit-button" class="text-button">← TOP</button><span id="quiz-mode" class="pill"></span><span id="quiz-progress"></span></header>
+    <div class="progress-track" aria-hidden="true"><div id="progress-bar"></div></div>
+    <article class="card quiz-card"><p class="eyebrow" id="quiz-unit"></p><h1 id="question" tabindex="-1"></h1><figure id="figure" hidden><div id="diagram"></div><figcaption><span>図は模式図です</span><button id="zoom-button" class="text-button">図を大きく見る</button></figcaption></figure>
+    <div id="choices" class="choices"></div><div id="written-panel" hidden><p class="muted">紙やノートに答えを書いてから、答えを見てください。</p><button id="reveal-button" class="primary">答えを見る</button><div id="self-grade" class="grade-grid" hidden><button data-grade="correct" class="grade">○<span>答え・理由が正しい</span></button><button data-grade="partial" class="grade">△<span>一部だけ正しい</span></button><button data-grade="wrong" class="grade">×<span>もう一度確かめる</span></button></div></div>
+    <section id="feedback" class="feedback" aria-live="polite" hidden></section><button id="next-button" class="primary next-button" hidden>次の問題</button></article>
+  </section>
+  <section id="result-screen" class="screen" hidden><article class="card result-card"><p class="eyebrow">学習の振り返り</p><h1 tabindex="-1" id="result-heading">今回の学習結果</h1><p id="result-summary" class="result-summary"></p><p id="result-meta" class="muted"></p><div id="result-wrong"></div><button id="review-button" class="secondary" hidden>今回のまちがいを復習する</button><button id="home-button" class="primary">TOPへ戻る</button></article></section>
+</main>
+<dialog id="settings-dialog"><div class="dialog-head"><h2>設定とバックアップ</h2><button id="close-settings" class="icon-button" aria-label="設定を閉じる">閉じる</button></div><form id="settings-form"><label>小石川の試験日<input id="exam-date" type="date" required></label><label>小学校の入学年度<input id="enrollment-year" type="number" min="1900" max="2100" required></label><p class="fine">入学年度の4月1日から試験日までを表示します。</p><button class="primary" type="submit">日付を保存する</button></form><hr><h3>学習データのバックアップ</h3><p class="muted">端末を変える前に、学習記録・設定・途中の学習を保存できます。</p><div class="mode-options"><button id="export-button" class="secondary">バックアップを保存</button><button id="import-button" class="secondary">バックアップを読み込む</button></div><input id="import-file" type="file" accept=".json,application/json" hidden><p id="settings-status" class="inline-status" role="status"></p></dialog>
+<dialog id="zoom-dialog" class="zoom-dialog"><div class="dialog-head"><h2>問題の図</h2><button id="close-zoom" class="icon-button">閉じる</button></div><p class="fine">図は拡大・スクロールして確認できます。</p><div id="zoom-content"></div></dialog>
+</body></html>
