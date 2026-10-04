@@ -12,7 +12,7 @@
 <audio id="sound-correct" src="./se-correct.mp3" preload="auto"></audio><audio id="sound-wrong" src="./se-wrong.mp3" preload="auto"></audio>
 <main class="shell">
   <section id="home-screen" class="screen">
-    <header class="hero"><div><h1>理科マスター</h1><p id="app-version" class="app-version">v1.1.4</p></div><button id="settings-button" class="icon-button" aria-label="設定を開く">設定</button></header>
+    <header class="hero"><div><h1>理科マスター</h1><p id="app-version" class="app-version">v1.1.5</p></div><button id="settings-button" class="icon-button" aria-label="設定を開く">設定</button></header>
     <section id="install-card" class="card install-card" aria-labelledby="install-heading">
       <img src="./icon-192.png" width="52" height="52" alt="">
       <div class="install-copy"><h2 id="install-heading">理科をホーム画面に</h2><p id="install-description">アプリとして追加すると、アイコンからすぐ開けます。</p></div>
@@ -25,7 +25,7 @@
     </div>
     <section class="card learn-card" aria-labelledby="learn-heading">
       <div class="section-head"><div><h2 id="learn-heading">小4下期の理科</h2></div><span class="pill" id="pool-count"></span></div>
-      <fieldset><legend>効果音</legend><div class="sound-settings"><label class="sound-toggle"><input id="sound-enabled" type="checkbox" checked><span id="sound-label">効果音 ON</span></label><label class="volume-control"><span>音量</span><input id="sound-volume" type="range" min="0" max="100" value="70" step="5"><output id="sound-volume-value" for="sound-volume">70%</output></label></div><div class="sound-preview"><button id="preview-correct" class="secondary" type="button">正解の音を確認</button><button id="preview-wrong" class="secondary" type="button">不正解の音を確認</button></div><p id="sound-status" class="fine" role="status"></p></fieldset>
+      <fieldset><legend>効果音</legend><div class="sound-settings"><label class="sound-toggle"><input id="sound-enabled" type="checkbox" checked><span id="sound-label">効果音 ON</span></label></div><p id="sound-status" class="fine" role="status"></p></fieldset>
       <fieldset><legend>学習方法</legend><div class="mode-options"><button data-mode="choice" class="mode selected" aria-pressed="true"><strong>4択</strong></button><button data-mode="written" class="mode" aria-pressed="false"><strong>記述</strong></button></div></fieldset>
       <fieldset><legend>問題の種類</legend><div class="filter-row"><button data-filter="all" aria-pressed="true" class="chip selected">すべての問題</button><button data-filter="diagram" aria-pressed="false" class="chip">図の問題だけ</button></div></fieldset>
       <details class="units-details" open><summary>出題する単元 <span id="unit-summary"></span></summary><div class="unit-actions"><button id="all-units" class="text-button">すべて選択</button><button id="no-units" class="text-button">選択解除</button></div><div id="unit-options"></div></details>

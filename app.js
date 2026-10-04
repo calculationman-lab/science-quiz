@@ -10,7 +10,7 @@
   function renderStorage(){ $('storage-status').textContent=storageError?'このブラウザでは記録を保存できません。バックアップを保存してください。':''; }
   let settings=C.cleanSettings(read(C.KEYS.settings)),progress=cleanProgress(read(C.KEYS.progress)),session=C.validateSession(read(C.KEYS.session),D.allQuestions),result=null,revealed=false;
   const sound=window.ScienceSound.create({correct:$('sound-correct'),wrong:$('sound-wrong')},()=>settings,message=>{$('sound-status').textContent=message;$('quiz-sound-status').textContent=message;});
-  function renderSound(){ $('sound-enabled').checked=settings.soundEnabled;$('sound-label').textContent=settings.soundEnabled?'効果音 ON':'効果音 OFF';$('sound-volume').value=Math.round(settings.soundVolume*100);$('sound-volume-value').textContent=Math.round(settings.soundVolume*100)+'%';$('quiz-sound-toggle').textContent=settings.soundEnabled?'効果音 ON':'効果音 OFF';$('quiz-sound-toggle').setAttribute('aria-pressed',String(settings.soundEnabled)); }
+  function renderSound(){ $('sound-enabled').checked=settings.soundEnabled;$('sound-label').textContent=settings.soundEnabled?'効果音 ON':'効果音 OFF';$('quiz-sound-toggle').textContent=settings.soundEnabled?'効果音 ON':'効果音 OFF';$('quiz-sound-toggle').setAttribute('aria-pressed',String(settings.soundEnabled)); }
   function persistSettings(){write(C.KEYS.settings,settings);}
   function persistProgress(){write(C.KEYS.progress,progress);}
   function persistSession(){write(C.KEYS.session,session);}
@@ -123,9 +123,7 @@
     }catch(error){$('settings-status').textContent=error.message==='Unexpected end of JSON input'?'ファイルを読み込めませんでした。':error.message||'ファイルを読み込めませんでした。';}finally{$('import-file').value='';}
   }
   $('sound-enabled').addEventListener('change',()=>{settings.soundEnabled=$('sound-enabled').checked;if(!settings.soundEnabled)sound.stop();persistSettings();renderSound();});
-  $('sound-volume').addEventListener('input',()=>{settings.soundVolume=Number($('sound-volume').value)/100;if(settings.soundVolume===0)sound.stop();persistSettings();renderSound();});
   $('quiz-sound-toggle').addEventListener('click',()=>{settings.soundEnabled=!settings.soundEnabled;if(!settings.soundEnabled)sound.stop();persistSettings();renderSound();});
-  $('preview-correct').addEventListener('click',()=>sound.play('correct',true));$('preview-wrong').addEventListener('click',()=>sound.play('wrong',true));
   for(const b of document.querySelectorAll('[data-mode]'))b.addEventListener('click',()=>{settings.mode=b.dataset.mode;persistSettings();renderPool();});
   for(const b of document.querySelectorAll('[data-filter]'))b.addEventListener('click',()=>{settings.filter=b.dataset.filter;persistSettings();renderPool();});
   for(const b of document.querySelectorAll('[data-count]'))b.addEventListener('click',()=>start(b.dataset.count));
