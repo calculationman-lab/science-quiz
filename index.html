@@ -3,15 +3,21 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>理科マスター</title><meta name="theme-color" content="#227963">
-  <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="理科マスター">
+  <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="理科マスター">
   <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
-  <script src="./questions.js" defer></script><script src="./diagrams.js" defer></script><script src="./countdown.js" defer></script><script src="./core.js" defer></script><script src="./app.js" defer></script>
+  <script src="./install.js" defer></script><script src="./questions.js" defer></script><script src="./diagrams.js" defer></script><script src="./countdown.js" defer></script><script src="./core.js" defer></script><script src="./app.js" defer></script>
 </head>
 <body>
 <main class="shell">
   <section id="home-screen" class="screen">
     <header class="hero"><div><p class="eyebrow">小4下期 · 図から考える理科</p><h1>理科マスター</h1><p>見て、考えて、確かめる。</p></div><button id="settings-button" class="icon-button" aria-label="設定を開く">設定</button></header>
+    <section id="install-card" class="card install-card" aria-labelledby="install-heading">
+      <img src="./icon-192.png" width="52" height="52" alt="">
+      <div class="install-copy"><h2 id="install-heading">理科をホーム画面に</h2><p id="install-description">アプリとして追加すると、アイコンからすぐ開けます。</p></div>
+      <div class="install-actions"><button id="install-button" class="primary">アプリをインストール</button><button id="install-help-button" class="text-button">追加方法を見る</button></div>
+      <p id="install-status" class="inline-status" role="status"></p>
+    </section>
     <div class="intro-grid">
       <section class="card countdown-card" aria-label="受験までの日数"><p class="label">小石川 入試まで</p><p class="days">あと <strong id="exam-days">—</strong> 日</p><p class="muted" id="school-days"></p><button id="today-button" class="primary">今日の学習を始める</button></section>
       <section class="card summary-card"><p class="label">今日の理科学習</p><strong id="today-status" class="today-status">まだ学習していません</strong><p class="muted" id="content-summary"></p><div class="resume-box" id="resume-box" hidden><p id="resume-text"></p><button id="resume-button" class="secondary">途中から再開する</button></div><p class="save-note" id="storage-status" role="status"></p></section>
@@ -26,7 +32,7 @@
     </section>
     <section class="card" aria-labelledby="weekly-heading"><p class="eyebrow">もう一度、確かめる</p><h2 id="weekly-heading">過去7日間のまちがいを復習</h2><p class="muted">選択中の単元にかかわらず、全単元の誤答から出題します。</p><div class="mode-options"><button id="weekly-choice" class="secondary" disabled>4択で復習 <span>0問</span></button><button id="weekly-written" class="secondary" disabled>記述の△・×を復習 <span>0問</span></button></div><p class="fine">正解し直しても、最後に間違えてから7日間は復習できます。</p></section>
     <section class="card" aria-labelledby="history-heading"><div class="section-head"><h2 id="history-heading">これまでの学習</h2><button id="clear-history" class="text-button">記録を消す</button></div><div id="history-list" class="history-list"></div></section>
-    <footer><p>理科マスター v1.1 · 小4下期17単元</p><p class="fine">教材の学習内容をもとに作成した問題です。図は模式図です。</p><p id="offline-status" class="fine" role="status"></p><details class="source-details"><summary>教材と内容の確認について</summary><p>出典：理科4下期スキャン_20261004-1023.pdf（138ページ）。各問題の解説にPDFの通しページを記載しています。全設問の転記ではなく、要点・実験・図表の読み取りから作成した456問です。</p><p>月の時刻・星の角度は教材の近似条件です。実際の観測時刻は日付・場所によって変わります。台風の分類・アメダスは気象庁の現行の説明でも確認しています。</p></details></footer>
+    <footer><p>理科マスター v1.1.1 · 小4下期17単元</p><p class="fine">教材の学習内容をもとに作成した問題です。図は模式図です。</p><p id="offline-status" class="fine" role="status"></p><details class="source-details"><summary>教材と内容の確認について</summary><p>出典：理科4下期スキャン_20261004-1023.pdf（138ページ）。各問題の解説にPDFの通しページを記載しています。全設問の転記ではなく、要点・実験・図表の読み取りから作成した456問です。</p><p>月の時刻・星の角度は教材の近似条件です。実際の観測時刻は日付・場所によって変わります。台風の分類・アメダスは気象庁の現行の説明でも確認しています。</p></details></footer>
   </section>
   <section id="quiz-screen" class="screen" hidden>
     <header class="quiz-header"><button id="quit-button" class="text-button">← TOP</button><span id="quiz-mode" class="pill"></span><span id="quiz-progress"></span></header>
@@ -37,6 +43,28 @@
   </section>
   <section id="result-screen" class="screen" hidden><article class="card result-card"><p class="eyebrow">学習の振り返り</p><h1 tabindex="-1" id="result-heading">今回の学習結果</h1><p id="result-summary" class="result-summary"></p><p id="result-meta" class="muted"></p><div id="result-wrong"></div><button id="review-button" class="secondary" hidden>今回のまちがいを復習する</button><button id="home-button" class="primary">TOPへ戻る</button></article></section>
 </main>
+<dialog id="install-dialog" aria-labelledby="install-dialog-heading">
+  <div class="dialog-head"><h2 id="install-dialog-heading">ホーム画面に追加する</h2><button id="close-install" class="icon-button" aria-label="インストール案内を閉じる">閉じる</button></div>
+  <p class="muted">このページをブラウザで開いたまま、下の手順で追加できます。</p>
+  <div class="install-devices" role="group" aria-label="使っている端末"><button class="chip" data-install-device="ios" aria-pressed="false">iPad・iPhone</button><button class="chip" data-install-device="desktop" aria-pressed="false">パソコン</button><button class="chip" data-install-device="android" aria-pressed="false">Android</button></div>
+  <section data-install-guide="ios" hidden>
+    <p class="install-browser-note">Safariでこのページを開きます。iPadでは下のボタンから追加画面を直接開けないため、Safariの共有ボタンを使います。</p>
+    <ol class="install-steps"><li><span class="install-step-icon" aria-hidden="true"><svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M10 13H6v15h20V13h-4M16 21V3m-6 6 6-6 6 6"/></svg></span><div><strong>Safariの「共有」を押す</strong><p>四角から上向きの矢印が出ているマークです。</p></div></li><li><span class="install-step-icon" aria-hidden="true">＋</span><div><strong>「ホーム画面に追加」を選ぶ</strong><p>一覧を下へスクロールします。「表示を増やす」や「アクションを編集」の中にある場合もあります。</p></div></li><li><img src="./apple-touch-icon.png" width="40" height="40" alt=""><div><strong>名前を確認して「追加」を押す</strong><p>「ウェブアプリとして開く」がある場合はオンにします。ホーム画面の「理科マスター」から開けます。</p></div></li></ol>
+    <a class="fine" href="https://support.apple.com/ja-jp/guide/ipad/ipad8f1f7a29/ipados" target="_blank" rel="noopener">Appleの手順を見る</a>
+  </section>
+  <section data-install-guide="desktop" hidden>
+    <p class="install-browser-note">Chrome・Edgeでこのページを開きます。</p>
+    <ol class="install-steps"><li><span class="install-step-icon" aria-hidden="true">1</span><div><strong>「アプリをインストール」を押す</strong><p>下のボタンが表示されていれば、そのまま追加の確認画面を開けます。</p></div></li><li><span class="install-step-icon" aria-hidden="true">2</span><div><strong>ブラウザの確認画面で「インストール」</strong><p>表示されない場合は、Chromeの右上の「⋮」→「キャスト、保存、共有」→「ページをアプリとしてインストール」を選びます。Edgeは「…」→「その他のツール」→「アプリ」から追加します。</p></div></li><li><img src="./icon-192.png" width="40" height="40" alt=""><div><strong>「理科マスター」を開く</strong><p>アプリのアイコンから、専用の画面で学習できます。</p></div></li></ol>
+    <p class="fine">すでに追加済みの場合は、ブラウザのメニューからアプリを開けます。</p>
+  </section>
+  <section data-install-guide="android" hidden>
+    <p class="install-browser-note">Chromeでこのページを開きます。</p>
+    <ol class="install-steps"><li><span class="install-step-icon" aria-hidden="true">1</span><div><strong>「アプリをインストール」を押す</strong><p>下のボタンが表示されない場合は、Chromeの右上の「⋮」を押します。</p></div></li><li><span class="install-step-icon" aria-hidden="true">＋</span><div><strong>「インストールしてショートカットを作成」→「インストール」</strong><p>ブラウザによっては「ホーム画面に追加」と表示されます。確認画面で追加を完了します。</p></div></li><li><img src="./icon-192.png" width="40" height="40" alt=""><div><strong>ホーム画面から開く</strong><p>「理科マスター」のアイコンを押します。</p></div></li></ol>
+  </section>
+  <button id="install-confirm-button" class="primary" hidden>アプリをインストール</button>
+  <p id="install-dialog-status" class="inline-status" role="status"></p>
+  <details class="install-trouble"><summary>追加できないとき</summary><p>ChatGPT・LINEなどの画面内で開いている場合は、下のURLをSafariまたはChromeで開いてください。iPadのChromeで項目が見つからない場合も、Safariで開いて追加できます。</p><label for="install-url">ブラウザで開くURL</label><input id="install-url" type="url" readonly value="https://calculationman-lab.github.io/science-quiz/"><button id="copy-install-url" class="secondary">URLをコピー</button><p id="install-copy-status" class="fine" role="status"></p><p class="fine">インターネットに接続して開き、画面の案内が古い場合は再読み込みしてください。追加後、初めて開くときも接続した状態で「オフライン学習の準備ができました」と出るまで待つと安心です。</p></details>
+</dialog>
 <dialog id="settings-dialog"><div class="dialog-head"><h2>設定とバックアップ</h2><button id="close-settings" class="icon-button" aria-label="設定を閉じる">閉じる</button></div><form id="settings-form"><label>小石川の試験日<input id="exam-date" type="date" required></label><label>小学校の入学年度<input id="enrollment-year" type="number" min="1900" max="2100" required></label><p class="fine">入学年度の4月1日から試験日までを表示します。</p><button class="primary" type="submit">日付を保存する</button></form><hr><h3>学習データのバックアップ</h3><p class="muted">端末を変える前に、学習記録・設定・途中の学習を保存できます。</p><div class="mode-options"><button id="export-button" class="secondary">バックアップを保存</button><button id="import-button" class="secondary">バックアップを読み込む</button></div><input id="import-file" type="file" accept=".json,application/json" hidden><p id="settings-status" class="inline-status" role="status"></p></dialog>
 <dialog id="zoom-dialog" class="zoom-dialog"><div class="dialog-head"><h2>問題の図</h2><button id="close-zoom" class="icon-button">閉じる</button></div><p class="fine">図は拡大・スクロールして確認できます。</p><div id="zoom-content"></div></dialog>
 </body></html>
