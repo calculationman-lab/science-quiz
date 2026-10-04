@@ -6,12 +6,13 @@
   <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="理科マスター">
   <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
-  <script src="./install.js" defer></script><script src="./questions.js" defer></script><script src="./diagrams.js" defer></script><script src="./countdown.js" defer></script><script src="./presentation.js" defer></script><script src="./core.js" defer></script><script src="./app.js" defer></script>
+  <script src="./install.js" defer></script><script src="./questions.js" defer></script><script src="./diagrams.js" defer></script><script src="./countdown.js" defer></script><script src="./presentation.js" defer></script><script src="./core.js" defer></script><script src="./sounds.js" defer></script><script src="./app.js" defer></script>
 </head>
 <body>
+<audio id="sound-correct" src="./se-correct.mp3" preload="auto"></audio><audio id="sound-wrong" src="./se-wrong.mp3" preload="auto"></audio>
 <main class="shell">
   <section id="home-screen" class="screen">
-    <header class="hero"><div><p class="eyebrow">小4下期 · 図から考える理科</p><h1>理科マスター</h1><p>見て、考えて、確かめる。</p></div><button id="settings-button" class="icon-button" aria-label="設定を開く">設定</button></header>
+    <header class="hero"><div><h1>理科マスター</h1><p id="app-version" class="app-version">v1.1.4</p></div><button id="settings-button" class="icon-button" aria-label="設定を開く">設定</button></header>
     <section id="install-card" class="card install-card" aria-labelledby="install-heading">
       <img src="./icon-192.png" width="52" height="52" alt="">
       <div class="install-copy"><h2 id="install-heading">理科をホーム画面に</h2><p id="install-description">アプリとして追加すると、アイコンからすぐ開けます。</p></div>
@@ -23,23 +24,24 @@
       <section class="card summary-card"><p class="label">今日の理科学習</p><strong id="today-status" class="today-status">まだ学習していません</strong><p class="muted" id="content-summary"></p><div class="resume-box" id="resume-box" hidden><p id="resume-text"></p><button id="resume-button" class="secondary">途中から再開する</button></div><p class="save-note" id="storage-status" role="status"></p></section>
     </div>
     <section class="card learn-card" aria-labelledby="learn-heading">
-      <div class="section-head"><div><p class="eyebrow">学習を選ぶ</p><h2 id="learn-heading">小4下期の理科</h2></div><span class="pill" id="pool-count"></span></div>
-      <fieldset><legend>学習方法</legend><div class="mode-options"><button data-mode="choice" class="mode selected" aria-pressed="true"><strong>4択</strong><span>選んで答えを確かめる</span></button><button data-mode="written" class="mode" aria-pressed="false"><strong>記述</strong><span>紙に書いて自己判定</span></button></div></fieldset>
+      <div class="section-head"><div><h2 id="learn-heading">小4下期の理科</h2></div><span class="pill" id="pool-count"></span></div>
+      <fieldset><legend>効果音</legend><div class="sound-settings"><label class="sound-toggle"><input id="sound-enabled" type="checkbox" checked><span id="sound-label">効果音 ON</span></label><label class="volume-control"><span>音量</span><input id="sound-volume" type="range" min="0" max="100" value="70" step="5"><output id="sound-volume-value" for="sound-volume">70%</output></label></div><div class="sound-preview"><button id="preview-correct" class="secondary" type="button">正解の音を確認</button><button id="preview-wrong" class="secondary" type="button">不正解の音を確認</button></div><p id="sound-status" class="fine" role="status"></p></fieldset>
+      <fieldset><legend>学習方法</legend><div class="mode-options"><button data-mode="choice" class="mode selected" aria-pressed="true"><strong>4択</strong></button><button data-mode="written" class="mode" aria-pressed="false"><strong>記述</strong></button></div></fieldset>
       <fieldset><legend>問題の種類</legend><div class="filter-row"><button data-filter="all" aria-pressed="true" class="chip selected">すべての問題</button><button data-filter="diagram" aria-pressed="false" class="chip">図の問題だけ</button></div></fieldset>
       <details class="units-details" open><summary>出題する単元 <span id="unit-summary"></span></summary><div class="unit-actions"><button id="all-units" class="text-button">すべて選択</button><button id="no-units" class="text-button">選択解除</button></div><div id="unit-options"></div></details>
-      <p class="muted count-note" id="count-note"></p><div class="start-grid"><button class="primary" data-count="10">10問<span>短い学習に</span></button><button class="primary" data-count="20">20問<span>毎日の学習に</span></button><button class="secondary" data-count="50">50問<span>まとめて練習</span></button><button class="secondary" data-count="all">選択範囲の全問<span id="all-count"></span></button></div>
+      <p class="muted count-note" id="count-note"></p><div class="start-grid"><button class="primary" data-count="10">10問</button><button class="primary" data-count="20">20問</button><button class="secondary" data-count="50">50問</button><button class="secondary" data-count="all">選択範囲の全問<span id="all-count"></span></button></div>
       <p class="inline-status" id="start-status" role="status"></p>
     </section>
-    <section class="card" aria-labelledby="weekly-heading"><p class="eyebrow">もう一度、確かめる</p><h2 id="weekly-heading">過去7日間のまちがいを復習</h2><p class="muted">選択中の単元にかかわらず、全単元の誤答から出題します。</p><div class="mode-options"><button id="weekly-choice" class="secondary" disabled>4択で復習 <span>0問</span></button><button id="weekly-written" class="secondary" disabled>記述の△・×を復習 <span>0問</span></button></div><p class="fine">正解し直しても、最後に間違えてから7日間は復習できます。</p></section>
+    <section class="card" aria-labelledby="weekly-heading"><h2 id="weekly-heading">過去7日間のまちがいを復習</h2><p class="muted">選択中の単元にかかわらず、全単元の誤答から出題します。</p><div class="mode-options"><button id="weekly-choice" class="secondary" disabled>4択で復習 <span>0問</span></button><button id="weekly-written" class="secondary" disabled>記述の△・×を復習 <span>0問</span></button></div><p class="fine">正解し直しても、最後に間違えてから7日間は復習できます。</p></section>
     <section class="card" aria-labelledby="history-heading"><div class="section-head"><h2 id="history-heading">これまでの学習</h2><button id="clear-history" class="text-button">記録を消す</button></div><div id="history-list" class="history-list"></div></section>
-    <footer><p>理科マスター v1.1.3 · 小4下期17単元</p><p class="fine">教材の学習内容をもとに作成した問題です。図は模式図です。</p><p id="offline-status" class="fine" role="status"></p><details class="source-details"><summary>教材と内容の確認について</summary><p>出典：理科4下期スキャン_20261004-1023.pdf（138ページ）。各問題の解説にPDFの通しページを記載しています。全設問の転記ではなく、要点・実験・図表の読み取りから作成した456問です。</p><p>月の時刻・星の角度は教材の近似条件です。実際の観測時刻は日付・場所によって変わります。台風の分類・アメダスは気象庁の現行の説明でも確認しています。</p></details></footer>
+    <footer><p id="offline-status" class="fine" role="status"></p><details class="source-details"><summary>教材と内容の確認について</summary><p>出典：理科4下期スキャン_20261004-1023.pdf（138ページ）。各問題の解説にPDFの通しページを記載しています。全設問の転記ではなく、要点・実験・図表の読み取りから作成した456問です。</p><p>月の時刻・星の角度は教材の近似条件です。実際の観測時刻は日付・場所によって変わります。台風の分類・アメダスは気象庁の現行の説明でも確認しています。</p></details></footer>
   </section>
   <section id="quiz-screen" class="screen" hidden>
-    <header class="quiz-header"><button id="quit-button" class="text-button">← TOP</button><span id="quiz-mode" class="pill"></span><span id="quiz-progress"></span></header>
+    <header class="quiz-header"><button id="quit-button" class="text-button">← TOP</button><span id="quiz-mode" class="pill"></span><button id="quiz-sound-toggle" class="text-button" aria-pressed="true">効果音 ON</button><span id="quiz-progress"></span></header>
     <div class="progress-track" aria-hidden="true"><div id="progress-bar"></div></div>
     <article class="card quiz-card"><p class="eyebrow" id="quiz-unit"></p><h1 id="question" tabindex="-1"></h1><figure id="figure" hidden><div id="diagram"></div><figcaption><span>図は模式図です</span><button id="zoom-button" class="text-button">図を大きく見る</button></figcaption></figure>
     <div id="choices" class="choices"></div><div id="written-panel" hidden><p class="muted">紙やノートに答えを書いてから、答えを見てください。</p><button id="reveal-button" class="primary">答えを見る</button><div id="self-grade" class="grade-grid" hidden><button data-grade="correct" class="grade">○<span>答え・理由が正しい</span></button><button data-grade="partial" class="grade">△<span>一部だけ正しい</span></button><button data-grade="wrong" class="grade">×<span>もう一度確かめる</span></button></div></div>
-    <section id="feedback" class="feedback" aria-live="polite" hidden></section><button id="next-button" class="primary next-button" hidden>次の問題</button></article>
+    <p id="quiz-sound-status" class="fine" role="status"></p><section id="feedback" class="feedback" aria-live="polite" hidden></section><button id="next-button" class="primary next-button" hidden>次の問題</button></article>
   </section>
   <section id="result-screen" class="screen" hidden><article class="card result-card"><p class="eyebrow">学習の振り返り</p><h1 tabindex="-1" id="result-heading">今回の学習結果</h1><p id="result-summary" class="result-summary"></p><p id="result-meta" class="muted"></p><div id="result-wrong"></div><button id="review-button" class="secondary" hidden>今回のまちがいを復習する</button><button id="home-button" class="primary">TOPへ戻る</button></article></section>
 </main>

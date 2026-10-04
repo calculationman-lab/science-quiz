@@ -3,7 +3,7 @@
   const P=typeof module==='object'&&module.exports?require('./presentation.js'):root.SciencePresentation;
   const KEYS={progress:'science-quiz-progress-v1',settings:'science-quiz-settings-v1',session:'science-quiz-session-v1'};
   const WEEK=7*24*60*60*1000;
-  const DEFAULTS={mode:'choice',filter:'all',units:Array.from({length:17},(_,i)=>i+1),examDate:'2029-02-03',enrollmentYear:2023};
+  const DEFAULTS={soundEnabled:true,soundVolume:0.7,mode:'choice',filter:'all',units:Array.from({length:17},(_,i)=>i+1),examDate:'2029-02-03',enrollmentYear:2023};
   function shuffle(items,random=Math.random){const a=items.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   function pool(questions,settings){return questions.filter(q=>settings.units.includes(q.unit)&&(settings.filter!=='diagram'||P.hasQuestionFigure(q)));}
   function cleanProgress(raw,questions,now=Date.now(),aliases={}){
@@ -12,7 +12,7 @@
     const history=Array.isArray(raw?.history)?raw.history.filter(h=>h&&['choice','written'].includes(h.mode)&&Number.isFinite(h.at)&&h.at<=now&&Number.isInteger(h.total)&&h.total>0&&h.total<=questions.length&&Number.isInteger(h.correct)&&h.correct>=0&&h.correct<=h.total&&Number.isInteger(h.partial||0)&&(h.partial||0)>=0&&h.correct+(h.partial||0)<=h.total).slice(-100).map(h=>({mode:h.mode,at:h.at,total:h.total,correct:h.correct,partial:h.partial||0,review:h.review===true})):[];
     return{version:1,history,mistakes};
   }
-  function cleanSettings(raw){const units=Array.isArray(raw?.units)?[...new Set(raw.units.filter(x=>Number.isInteger(x)&&x>=1&&x<=17))]:DEFAULTS.units.slice();return{...DEFAULTS,mode:raw?.mode==='written'?'written':'choice',filter:raw?.filter==='diagram'?'diagram':'all',units,examDate:validDate(raw?.examDate)?raw.examDate:DEFAULTS.examDate,enrollmentYear:Number.isInteger(raw?.enrollmentYear)&&raw.enrollmentYear>=1900&&raw.enrollmentYear<=2100?raw.enrollmentYear:DEFAULTS.enrollmentYear};}
+  function cleanSettings(raw){const units=Array.isArray(raw?.units)?[...new Set(raw.units.filter(x=>Number.isInteger(x)&&x>=1&&x<=17))]:DEFAULTS.units.slice();return{...DEFAULTS,soundEnabled:raw?.soundEnabled!==false,soundVolume:Number.isFinite(raw?.soundVolume)?Math.max(0,Math.min(1,raw.soundVolume)):DEFAULTS.soundVolume,mode:raw?.mode==='written'?'written':'choice',filter:raw?.filter==='diagram'?'diagram':'all',units,examDate:validDate(raw?.examDate)?raw.examDate:DEFAULTS.examDate,enrollmentYear:Number.isInteger(raw?.enrollmentYear)&&raw.enrollmentYear>=1900&&raw.enrollmentYear<=2100?raw.enrollmentYear:DEFAULTS.enrollmentYear};}
   function validDate(s){if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s))return false;const d=new Date(s+'T00:00:00Z');return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===s;}
   function validateSession(raw,questions){
     if(!raw||raw.version!==1||!['choice','written'].includes(raw.mode)||!Array.isArray(raw.ids)||raw.ids.length===0||raw.ids.length>questions.length||!Number.isInteger(raw.index)||raw.index<0||raw.index>=raw.ids.length||!Array.isArray(raw.answers)||raw.answers.length!==raw.ids.length)return null;
