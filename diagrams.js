@@ -1,5 +1,402 @@
 (function(root){
   'use strict';
+  const GENERATED={
+  "moon:upper": {
+    "src": "./assets/diagrams/moon-upper.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "moon:lower": {
+    "src": "./assets/diagrams/moon-lower.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "phase-sequence": {
+    "src": "./assets/diagrams/phase-sequence.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "sky-path": {
+    "src": "./assets/diagrams/sky-path.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "sky:full": {
+    "src": "./assets/diagrams/sky-full.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "sky:upper": {
+    "src": "./assets/diagrams/sky-upper.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "sky:lower": {
+    "src": "./assets/diagrams/sky-lower.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "moonrise": {
+    "src": "./assets/diagrams/moonrise.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "orbit": {
+    "src": "./assets/diagrams/orbit.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "eclipse:solar": {
+    "src": "./assets/diagrams/eclipse-solar.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "eclipse:lunar": {
+    "src": "./assets/diagrams/eclipse-lunar.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "annular": {
+    "src": "./assets/diagrams/annular.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "north-stars": {
+    "src": "./assets/diagrams/north-stars.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "triangle:summer": {
+    "src": "./assets/diagrams/triangle-summer.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "triangle:winter": {
+    "src": "./assets/diagrams/triangle-winter.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "star-trails": {
+    "src": "./assets/diagrams/star-trails.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "star-angle": {
+    "src": "./assets/diagrams/star-angle.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "polaris-finder": {
+    "src": "./assets/diagrams/polaris-finder.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "star-radii": {
+    "src": "./assets/diagrams/star-radii.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "seed:bean": {
+    "src": "./assets/diagrams/seed-bean.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "seed:corn": {
+    "src": "./assets/diagrams/seed-corn.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "germination": {
+    "src": "./assets/diagrams/germination.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "embryo-parts": {
+    "src": "./assets/diagrams/embryo-parts.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "leaf-veins": {
+    "src": "./assets/diagrams/leaf-veins.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "root-systems": {
+    "src": "./assets/diagrams/root-systems.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "germination-test": {
+    "src": "./assets/diagrams/germination-test.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "seed-graph": {
+    "src": "./assets/diagrams/seed-graph.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "seed-nutrition": {
+    "src": "./assets/diagrams/seed-nutrition.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "growth-experiment": {
+    "src": "./assets/diagrams/growth-experiment.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "light-growth": {
+    "src": "./assets/diagrams/light-growth.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "phototropism": {
+    "src": "./assets/diagrams/phototropism.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "gravity-growth": {
+    "src": "./assets/diagrams/gravity-growth.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "auxin-stem": {
+    "src": "./assets/diagrams/auxin-stem.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "photosynthesis": {
+    "src": "./assets/diagrams/photosynthesis.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "flower": {
+    "src": "./assets/diagrams/flower.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "flower-parts": {
+    "src": "./assets/diagrams/flower-parts.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "cloud-rise": {
+    "src": "./assets/diagrams/cloud-rise.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "hygrometer": {
+    "src": "./assets/diagrams/hygrometer.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "humidity-table": {
+    "src": "./assets/diagrams/humidity-table.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "cloud:storm": {
+    "src": "./assets/diagrams/cloud-storm.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "mountain-cloud": {
+    "src": "./assets/diagrams/mountain-cloud.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "cloud": {
+    "src": "./assets/diagrams/cloud.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "rain-gauge": {
+    "src": "./assets/diagrams/rain-gauge.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "water-cycle": {
+    "src": "./assets/diagrams/water-cycle.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "pressure:low": {
+    "src": "./assets/diagrams/pressure-low.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "pressure:high": {
+    "src": "./assets/diagrams/pressure-high.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "sea-breeze:day": {
+    "src": "./assets/diagrams/sea-breeze-day.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "sea-breeze:night": {
+    "src": "./assets/diagrams/sea-breeze-night.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "rain-two-cylinders": {
+    "src": "./assets/diagrams/rain-two-cylinders.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "rain-volume": {
+    "src": "./assets/diagrams/rain-volume.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "pressure-plan": {
+    "src": "./assets/diagrams/pressure-plan.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "isobars": {
+    "src": "./assets/diagrams/isobars.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "cloud-cover:8": {
+    "src": "./assets/diagrams/cloud-cover-8.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "cloud-cover:9": {
+    "src": "./assets/diagrams/cloud-cover-9.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "wind-force-table": {
+    "src": "./assets/diagrams/wind-force-table.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "weather-symbols": {
+    "src": "./assets/diagrams/weather-symbols.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "winter-mountain": {
+    "src": "./assets/diagrams/winter-mountain.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "front:warm": {
+    "src": "./assets/diagrams/front-warm.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "front:cold": {
+    "src": "./assets/diagrams/front-cold.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "front-symbols": {
+    "src": "./assets/diagrams/front-symbols.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "typhoon-section": {
+    "src": "./assets/diagrams/typhoon-section.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "typhoon-plan": {
+    "src": "./assets/diagrams/typhoon-plan.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "typhoon-classes": {
+    "src": "./assets/diagrams/typhoon-classes.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "string-phone": {
+    "src": "./assets/diagrams/string-phone.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "sound-compression": {
+    "src": "./assets/diagrams/sound-compression.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "sound-reflection": {
+    "src": "./assets/diagrams/sound-reflection.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "waves:amplitude": {
+    "src": "./assets/diagrams/waves-amplitude.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "waves:frequency": {
+    "src": "./assets/diagrams/waves-frequency.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "strings:length": {
+    "src": "./assets/diagrams/strings-length.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "tubes:blow": {
+    "src": "./assets/diagrams/tubes-blow.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "cups:tap": {
+    "src": "./assets/diagrams/cups-tap.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "timbre": {
+    "src": "./assets/diagrams/timbre.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "frequency-count": {
+    "src": "./assets/diagrams/frequency-count.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "cylinder": {
+    "src": "./assets/diagrams/cylinder.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "filtration": {
+    "src": "./assets/diagrams/filtration.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "ammeter": {
+    "src": "./assets/diagrams/ammeter.webp",
+    "width": 1776,
+    "height": 886
+  },
+  "microscope": {
+    "src": "./assets/diagrams/microscope.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "displacement": {
+    "src": "./assets/diagrams/displacement.webp",
+    "width": 1774,
+    "height": 887
+  },
+  "ammeter-scale": {
+    "src": "./assets/diagrams/ammeter-scale.webp",
+    "width": 1774,
+    "height": 887
+  }
+};
   const C={ink:'#183d42',blue:'#2376a5',green:'#26876c',gold:'#ffce55',dark:'#263848',earth:'#5a9bb8'};
   const text=(x,y,s,size=19,fill=C.ink)=>`<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" text-anchor="middle">${s}</text>`;
   const line=(x,y,a,b,color=C.ink,w=2)=>`<path d="M${x} ${y}L${a} ${b}" fill="none" stroke="${color}" stroke-width="${w}"/>`;
@@ -18,7 +415,7 @@
   const leaf=(x,y,side,color=C.green)=>`<ellipse cx="${x+side*21}" cy="${y}" rx="25" ry="11" transform="rotate(${side*20} ${x+side*21} ${y})" fill="${color}"/>`;
   function plant(x,y,weak=false){const color=weak?'#a9c681':C.green;return `<path d="M${x} ${y}Q${x+8} ${y-65} ${x} ${y-(weak?125:92)}" fill="none" stroke="${weak?'#7baa67':C.green}" stroke-width="${weak?3:5}"/>`+leaf(x,y-65,-1,color)+leaf(x,y-65,1,color)+leaf(x,y-35,1,color);}
   function wave(y,amp,cycles){let d='';for(let x=105;x<=515;x+=2)d+=`${x===105?'M':'L'}${x} ${y-Math.sin((x-105)/410*Math.PI*2*cycles)*amp}`;return `<path d="${d}" fill="none" stroke="${C.blue}" stroke-width="3"/>`;}
-  function render(key){
+  function render(key,useOriginal=false){
     const [type,arg]=key.split(':');let s='',h=320;let desc='';
     if(type==='moon'){s=box(30,15,560,285,'#edf3f7')+moon(310,155,80,arg)+text(310,275,'A');desc=arg==='upper'?'Aの月は右半分が光っている。日本から南の空を見る。':'Aの月は左半分が光っている。日本から南の空を見る。';}
     else if(type==='phase-sequence'){s=text(310,40,'日本で南中する月の主な変化',20);['new','upper','full','lower','new'].forEach((k,i)=>{s+=moon(70+i*120,160,35,k)+text(70+i*120,225,['新月','上弦','満月','？','新月'][i]);if(i<4)s+=arrow(112+i*120,160,140+i*120,160);});desc='新月、右半分が明るい月、満月、左半分が明るい月、新月の順に並んでいる。';}
@@ -171,7 +568,8 @@
       s=box(55,30,510,270,'#f6fbff')+`<path d="M120 235A190 165 0 0 1 500 235" fill="none" stroke="#a4b8c1" stroke-width="2"/>`;for(let k=0;k<=5;k++){const a=Math.PI+(k/5)*Math.PI,x=310+190*Math.cos(a),y=235+165*Math.sin(a);s+=line(x,y,310+170*Math.cos(a),235+145*Math.sin(a))+text(310+145*Math.cos(a)+(k===2?-18:0),235+118*Math.sin(a),String(k),21);}const a=Math.PI+2/5*Math.PI;s+=arrow(310,235,310+165*Math.cos(a),235+145*Math.sin(a))+text(310,283,'使用端子：500mA',20);desc='0から5までの目盛りで針は2を指す。500mA端子を使用。';
     }
     else throw new Error('Unknown diagram '+key);
+    if(!useOriginal&&GENERATED[key]){const a=GENERATED[key];return {svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${a.width} ${a.height}" role="img" aria-label="${desc}"><image href="${a.src}" width="${a.width}" height="${a.height}" preserveAspectRatio="xMidYMid meet"/></svg>`,description:desc};}
     return {svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 ${h}" role="img" aria-label="${desc}" style="font-family:system-ui, sans-serif"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="context-stroke"/></marker></defs>${s}</svg>`,description:desc};
   }
-  const api={render};if(typeof module==='object'&&module.exports)module.exports=api;else root.ScienceDiagrams=api;
+  const api={render,assets:Object.freeze(GENERATED)};if(typeof module==='object'&&module.exports)module.exports=api;else root.ScienceDiagrams=api;
 })(typeof window!=='undefined'?window:null);
