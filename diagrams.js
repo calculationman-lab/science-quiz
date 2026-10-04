@@ -415,7 +415,7 @@
   const leaf=(x,y,side,color=C.green)=>`<ellipse cx="${x+side*21}" cy="${y}" rx="25" ry="11" transform="rotate(${side*20} ${x+side*21} ${y})" fill="${color}"/>`;
   function plant(x,y,weak=false){const color=weak?'#a9c681':C.green;return `<path d="M${x} ${y}Q${x+8} ${y-65} ${x} ${y-(weak?125:92)}" fill="none" stroke="${weak?'#7baa67':C.green}" stroke-width="${weak?3:5}"/>`+leaf(x,y-65,-1,color)+leaf(x,y-65,1,color)+leaf(x,y-35,1,color);}
   function wave(y,amp,cycles){let d='';for(let x=105;x<=515;x+=2)d+=`${x===105?'M':'L'}${x} ${y-Math.sin((x-105)/410*Math.PI*2*cycles)*amp}`;return `<path d="${d}" fill="none" stroke="${C.blue}" stroke-width="3"/>`;}
-  function render(key,useOriginal=false){
+  function render(key,useOriginal=false,descriptionOverride=null){
     const [type,arg]=key.split(':');let s='',h=320;let desc='';
     if(type==='moon'){s=box(30,15,560,285,'#edf3f7')+moon(310,155,80,arg)+text(310,275,'A');desc=arg==='upper'?'Aの月は右半分が光っている。日本から南の空を見る。':'Aの月は左半分が光っている。日本から南の空を見る。';}
     else if(type==='phase-sequence'){s=text(310,40,'日本で南中する月の主な変化',20);['new','upper','full','lower','new'].forEach((k,i)=>{s+=moon(70+i*120,160,35,k)+text(70+i*120,225,['新月','上弦','満月','？','新月'][i]);if(i<4)s+=arrow(112+i*120,160,140+i*120,160);});desc='新月、右半分が明るい月、満月、左半分が明るい月、新月の順に並んでいる。';}
@@ -568,6 +568,7 @@
       s=box(55,30,510,270,'#f6fbff')+`<path d="M120 235A190 165 0 0 1 500 235" fill="none" stroke="#a4b8c1" stroke-width="2"/>`;for(let k=0;k<=5;k++){const a=Math.PI+(k/5)*Math.PI,x=310+190*Math.cos(a),y=235+165*Math.sin(a);s+=line(x,y,310+170*Math.cos(a),235+145*Math.sin(a))+text(310+145*Math.cos(a)+(k===2?-18:0),235+118*Math.sin(a),String(k),21);}const a=Math.PI+2/5*Math.PI;s+=arrow(310,235,310+165*Math.cos(a),235+145*Math.sin(a))+text(310,283,'使用端子：500mA',20);desc='0から5までの目盛りで針は2を指す。500mA端子を使用。';
     }
     else throw new Error('Unknown diagram '+key);
+    if(descriptionOverride!==null)desc=String(descriptionOverride).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
     if(!useOriginal&&GENERATED[key]){const a=GENERATED[key];return {svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${a.width} ${a.height}" role="img" aria-label="${desc}"><image href="${a.src}" width="${a.width}" height="${a.height}" preserveAspectRatio="xMidYMid meet"/></svg>`,description:desc};}
     return {svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 ${h}" role="img" aria-label="${desc}" style="font-family:system-ui, sans-serif"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="context-stroke"/></marker></defs>${s}</svg>`,description:desc};
   }

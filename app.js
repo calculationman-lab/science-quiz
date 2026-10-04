@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  const D=window.ScienceData,C=window.ScienceCore,G=window.ScienceDiagrams,$=id=>document.getElementById(id);
+  const D=window.ScienceData,C=window.ScienceCore,G=window.ScienceDiagrams,P=window.SciencePresentation,$=id=>document.getElementById(id);
   const byId=new Map(D.allQuestions.map(q=>[q.id,q])),byUnit=new Map(D.units.map(u=>[u.id,u]));
   const cleanProgress=raw=>C.cleanProgress(raw,D.allQuestions,Date.now(),D.aliases);
   const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -29,7 +29,7 @@
       for(const u of D.units.filter(u=>u.category===category)){
         const q=D.questions.filter(q=>q.unit===u.id),label=document.createElement('label');label.className='unit-option';
         const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.value=u.id;checkbox.checked=settings.units.includes(u.id);checkbox.addEventListener('change',()=>{settings.units=[...document.querySelectorAll('.unit-option input:checked')].map(x=>Number(x.value));persistSettings();renderPool();});
-        const info=document.createElement('span');info.innerHTML=`<strong>${u.id}. ${esc(u.name)}</strong><small>${q.length}問 · 図 ${q.filter(q=>q.diagram).length}問</small>`;label.append(checkbox,info);grid.append(label);
+        const info=document.createElement('span');info.innerHTML=`<strong>${u.id}. ${esc(u.name)}</strong><small>${q.length}問 · 図 ${q.filter(P.hasQuestionFigure).length}問</small>`;label.append(checkbox,info);grid.append(label);
       }
       group.append(grid);$('unit-options').append(group);
     }
@@ -45,7 +45,7 @@
   function renderHome(){
     progress=cleanProgress(progress);renderCountdown();renderUnits();renderPool();renderStorage();
     const today=progress.history.filter(h=>jstDay(h.at)===jstDay(Date.now()));$('today-status').textContent=today.length?`${today.length}回 · ${today.reduce((n,h)=>n+h.total,0)}問学習しました`:'まだ学習していません';
-    $('content-summary').textContent=`17単元 · ${D.questions.length}問 · 図の問題 ${D.questions.filter(q=>q.diagram).length}問`;
+    $('content-summary').textContent=`17単元 · ${D.questions.length}問 · 図の問題 ${D.questions.filter(P.hasQuestionFigure).length}問`;
     $('resume-box').hidden=!session;if(session)$('resume-text').textContent=`${session.mode==='choice'?'4択':'記述'} ${session.ids.length}問の${session.index+1}問目から再開できます。`;
     for(const mode of ['choice','written']){const b=$('weekly-'+mode),n=C.weekly(progress,mode,D.questions).length;b.disabled=!n;b.innerHTML=`${mode==='choice'?'4択で復習':'記述の△・×を復習'} <span>${n}問</span>`;}
     $('history-list').replaceChildren();
@@ -62,15 +62,17 @@
     session={version:1,mode,ids:selected.map(q=>q.id),index:0,answers:selected.map(()=>null),optionOrder:selected.map(q=>C.shuffle(q.options)),startedAt:Date.now(),review};result=null;revealed=false;persistSession();show('quiz');renderQuestion();
   }
   function current(){return byId.get(session.ids[session.index]);}
-  function renderFigure(q,target){target.innerHTML=q.diagram?G.render(q.diagram).svg:'';}
+  function renderFigure(q,target){target.innerHTML=P.figure(q,revealed,G);}
+  function updateFigure(q){$('figure').hidden=!q.diagram||(!revealed&&!P.hasQuestionFigure(q));renderFigure(q,$('diagram'));}
   function feedback(q,grade=null){
-    $('feedback').hidden=false;$('feedback').innerHTML=`${grade?`<h2>${grade==='correct'?'正解です':grade==='partial'?'一部をもう一度確かめましょう':'答えを確かめましょう'}</h2>`:''}<p class="answer-label">答え</p><p><strong>${esc(q.answer)}</strong></p><p>${esc(q.explanation)}</p><p class="source">出典：教材PDF ${q.sourcePage}ページの内容をもとに作成</p>`;
+    revealed=true;updateFigure(q);$('feedback').hidden=false;$('feedback').innerHTML=`${grade?`<h2>${grade==='correct'?'正解です':grade==='partial'?'一部をもう一度確かめましょう':'答えを確かめましょう'}</h2>`:''}<p class="answer-label">答え</p><p><strong>${esc(q.answer)}</strong></p><p>${esc(q.explanation)}</p><p class="source">出典：教材PDF ${q.sourcePage}ページの内容をもとに作成</p>`;
   }
   function renderQuestion(){
     const q=current(),answer=session.answers[session.index];revealed=!!answer;
     $('quiz-mode').textContent=`${session.mode==='choice'?'4択':'記述'}${session.review?' · 復習':''}`;$('quiz-progress').textContent=`${session.index+1}／${session.ids.length}問`;$('progress-bar').style.width=`${session.index/session.ids.length*100}%`;
-    $('quiz-unit').textContent=byUnit.get(q.unit).name;$('question').textContent=q.prompt;
-    $('figure').hidden=!q.diagram;renderFigure(q,$('diagram'));$('choices').replaceChildren();$('choices').hidden=session.mode!=='choice';$('written-panel').hidden=session.mode!=='written';$('feedback').hidden=true;$('next-button').hidden=!answer;$('self-grade').hidden=!answer;$('reveal-button').hidden=!!answer;
+    $('quiz-unit').textContent=byUnit.get(q.unit).name;$('question').textContent=P.questionPrompt(q);
+    if($('zoom-dialog').open)$('zoom-dialog').close();$('zoom-content').replaceChildren();
+    updateFigure(q);$('choices').replaceChildren();$('choices').hidden=session.mode!=='choice';$('written-panel').hidden=session.mode!=='written';$('feedback').hidden=true;$('next-button').hidden=!answer;$('self-grade').hidden=!answer;$('reveal-button').hidden=!!answer;
     $('next-button').textContent=session.index===session.ids.length-1?'学習結果を見る':'次の問題';
     if(session.mode==='choice')session.optionOrder[session.index].forEach((option,i)=>{
       const b=document.createElement('button');b.className='choice';b.dataset.answer=option;b.innerHTML=`<span class="choice-letter">${'ABCD'[i]}</span><span>${esc(option)}</span>`;
@@ -134,7 +136,7 @@
   $('settings-button').addEventListener('click',openSettings);$('close-settings').addEventListener('click',()=>$('settings-dialog').close());
   $('settings-form').addEventListener('submit',event=>{event.preventDefault();const date=$('exam-date').value,year=Number($('enrollment-year').value);if(!window.SchoolCountdown.schoolDays(year,date)){ $('settings-status').textContent='試験日は入学年度の4月1日より後にしてください。';return;}settings.examDate=date;settings.enrollmentYear=year;persistSettings();renderCountdown();$('settings-status').textContent=storageError?'設定を保存できませんでした。':'日付を保存しました。';});
   $('export-button').addEventListener('click',exportData);$('import-button').addEventListener('click',()=>$('import-file').click());$('import-file').addEventListener('change',event=>importData(event.target.files[0]));
-  $('zoom-button').addEventListener('click',()=>{renderFigure(current(),$('zoom-content'));$('zoom-dialog').showModal();});$('close-zoom').addEventListener('click',()=>$('zoom-dialog').close());
+  $('zoom-button').addEventListener('click',()=>{const q=current();if(!revealed&&!P.hasQuestionFigure(q))return;renderFigure(q,$('zoom-content'));$('zoom-dialog').showModal();});$('close-zoom').addEventListener('click',()=>$('zoom-dialog').close());
   window.addEventListener('pageshow',()=>{renderCountdown();if(!$('home-screen').hidden)renderHome();});document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderCountdown();if(!$('home-screen').hidden)renderHome();}});setInterval(renderCountdown,60000);
   renderHome();
   // Probe write permission without touching any other app's keys.

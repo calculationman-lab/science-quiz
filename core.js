@@ -1,10 +1,11 @@
 (function(root){
   'use strict';
+  const P=typeof module==='object'&&module.exports?require('./presentation.js'):root.SciencePresentation;
   const KEYS={progress:'science-quiz-progress-v1',settings:'science-quiz-settings-v1',session:'science-quiz-session-v1'};
   const WEEK=7*24*60*60*1000;
   const DEFAULTS={mode:'choice',filter:'all',units:Array.from({length:17},(_,i)=>i+1),examDate:'2029-02-03',enrollmentYear:2023};
   function shuffle(items,random=Math.random){const a=items.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-  function pool(questions,settings){return questions.filter(q=>settings.units.includes(q.unit)&&(settings.filter!=='diagram'||q.diagram));}
+  function pool(questions,settings){return questions.filter(q=>settings.units.includes(q.unit)&&(settings.filter!=='diagram'||P.hasQuestionFigure(q)));}
   function cleanProgress(raw,questions,now=Date.now(),aliases={}){
     const ids=new Set(questions.map(q=>q.id)),mistakes={choice:{},written:{}};
     for(const mode of ['choice','written'])for(const [oldId,t] of Object.entries(raw?.mistakes?.[mode]||{})){const id=aliases[oldId]||oldId;if(ids.has(id)&&Number.isFinite(t)&&t>now-WEEK&&t<=now)mistakes[mode][id]=Math.max(mistakes[mode][id]||0,t);}
